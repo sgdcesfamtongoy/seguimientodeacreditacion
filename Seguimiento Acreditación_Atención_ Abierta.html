@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seguimiento de Acreditación — Atención Abierta · CESFAM Tongoy</title>
+<style>
+  :root{
+    --bg:#f4f6f9; --panel:#ffffff; --ink:#15233b; --muted:#5b6b82; --line:#e2e8f1;
+    --primary:#1f3a5f; --primary-2:#2b5a8c; --accent:#1f7a6a;
+    --ok:#1b8a5a; --okbg:#e5f4ec; --warn:#b9770a; --warnbg:#fdf3e0;
+    --bad:#c0392b; --badbg:#fbeceb; --pend:#64748b; --pendbg:#eef1f6;
+    --na:#9aa6b6; --nabg:#f1f3f6; --alta:#b71c1c; --altabg:#fbe9e7;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  header{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;padding:16px 20px}
+  header h1{margin:0;font-size:18px;font-weight:650}
+  header p{margin:3px 0 0;font-size:12.5px;opacity:.85}
+  .wrap{max-width:1280px;margin:0 auto;padding:16px 20px 60px}
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0}
+  .btn{border:1px solid var(--line);background:#fff;color:var(--ink);padding:7px 12px;border-radius:8px;font-size:13px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+  .btn:hover{border-color:var(--primary-2);color:var(--primary-2)}
+  .btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+  .btn.primary:hover{background:var(--primary-2)}
+  .btn.ghost{background:transparent}
+  .spacer{flex:1}
+  .saved{font-size:12px;color:var(--muted);min-width:120px;text-align:right}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px;margin:8px 0 6px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 12px}
+  .card .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+  .card .v{font-size:22px;font-weight:700;margin-top:2px}
+  .card.good .v{color:var(--ok)} .card.bad .v{color:var(--bad)} .card.warn .v{color:var(--warn)}
+  .progress{height:12px;background:#e9edf3;border-radius:7px;overflow:hidden;margin-top:6px}
+  .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#2fa088)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:14px}
+  .panel h2{margin:0 0 10px;font-size:14px}
+  details.byamb summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--primary-2)}
+  .ambgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px 18px;margin-top:10px}
+  .ambrow{font-size:12.5px}
+  .ambrow .top{display:flex;justify-content:space-between;margin-bottom:3px}
+  .ambrow .bar{height:8px;background:#e9edf3;border-radius:5px;overflow:hidden}
+  .ambrow .bar > i{display:block;height:100%;background:var(--accent)}
+  .filters{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center}
+  .filters select,.filters input{border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:13px;background:#fff;color:var(--ink)}
+  .filters input[type=search]{min-width:200px}
+  .count{color:var(--muted);font-size:12.5px;margin-left:auto}
+  .tablewrap{overflow:auto;border:1px solid var(--line);border-radius:12px;margin-top:10px;background:#fff}
+  table{border-collapse:collapse;width:100%;min-width:900px}
+  thead th{position:sticky;top:0;background:#eef2f7;text-align:left;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.02em;padding:9px 10px;border-bottom:1px solid var(--line);z-index:1}
+  tbody td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:13px}
+  tbody tr{cursor:pointer}
+  tbody tr:hover{background:#f7f9fc}
+  tr.na{color:var(--na)}
+  tr.na .carac{text-decoration:line-through}
+  .code{font-weight:600;white-space:nowrap}
+  .chip{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11.5px;font-weight:600;white-space:nowrap}
+  .chip.alta{background:var(--altabg);color:var(--alta)}
+  .chip.normal{background:#eef1f6;color:var(--muted)}
+  .umbral{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .umbral.u100{color:var(--bad);font-weight:600}
+  select.estado{border:1px solid var(--line);border-radius:7px;padding:5px 6px;font-size:12.5px;font-weight:600;background:#fff}
+  select.estado[data-e="Cumple"]{background:var(--okbg);color:var(--ok)}
+  select.estado[data-e="No cumple"]{background:var(--badbg);color:var(--bad)}
+  select.estado[data-e="En proceso"]{background:var(--warnbg);color:var(--warn)}
+  select.estado[data-e="Pendiente"]{background:var(--pendbg);color:var(--pend)}
+  select.estado[data-e="No aplica"]{background:var(--nabg);color:var(--na)}
+  input.av{width:58px;border:1px solid var(--line);border-radius:7px;padding:5px 6px;font-size:12.5px;text-align:right}
+  .muted{color:var(--muted)}
+  /* drawer */
+  .overlay{position:fixed;inset:0;background:rgba(15,25,45,.38);display:none;z-index:40}
+  .overlay.show{display:block}
+  .drawer{position:fixed;top:0;right:0;height:100%;width:min(460px,94vw);background:#fff;box-shadow:-8px 0 30px rgba(0,0,0,.18);transform:translateX(100%);transition:transform .22s ease;z-index:50;display:flex;flex-direction:column}
+  .drawer.show{transform:none}
+  .drawer .dh{padding:14px 16px;border-bottom:1px solid var(--line)}
+  .drawer .dh .code{font-size:12.5px;color:var(--primary-2)}
+  .drawer .dh h3{margin:4px 0 0;font-size:15px;line-height:1.3}
+  .drawer .db{padding:14px 16px;overflow:auto;flex:1}
+  .field{margin-bottom:12px}
+  .field label{display:block;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.02em;margin-bottom:4px}
+  .field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:13px;font-family:inherit;background:#fff;color:var(--ink)}
+  .field textarea{min-height:60px;resize:vertical}
+  .drawer .df{padding:12px 16px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:space-between;align-items:center}
+  .nanote{background:var(--nabg);color:var(--muted);border-radius:8px;padding:8px 10px;font-size:12.5px;margin-bottom:12px}
+  /* modal inventario */
+  .modal{position:fixed;inset:0;display:none;z-index:60;align-items:center;justify-content:center;padding:18px}
+  .modal.show{display:flex}
+  .modal .box{background:#fff;border-radius:14px;max-width:620px;width:100%;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.28)}
+  .modal .mh{padding:15px 18px;border-bottom:1px solid var(--line)}
+  .modal .mh h3{margin:0;font-size:15px}
+  .modal .mh p{margin:4px 0 0;font-size:12.5px;color:var(--muted)}
+  .modal .mb{padding:10px 18px;overflow:auto}
+  .modal .mf{padding:12px 18px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap}
+  .grp{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin:12px 0 4px}
+  .srow{display:flex;align-items:center;justify-content:space-between;padding:7px 2px;border-bottom:1px solid var(--line)}
+  .srow .nm{font-size:13px}
+  .srow .nm b{font-weight:600}
+  .srow .cc{font-size:11.5px;color:var(--muted)}
+  .switch{position:relative;width:44px;height:24px;flex:none}
+  .switch input{opacity:0;width:0;height:0}
+  .slider{position:absolute;inset:0;background:#cbd5e1;border-radius:999px;transition:.15s;cursor:pointer}
+  .slider:before{content:"";position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.15s}
+  .switch input:checked + .slider{background:var(--accent)}
+  .switch input:checked + .slider:before{transform:translateX(20px)}
+  @media(max-width:560px){ .count{margin-left:0} }
+</style>
+</head>
+<body>
+<header>
+  <h1>Seguimiento de Acreditación · Atención Abierta</h1>
+  <p>CESFAM Tongoy — Manual del Estándar General de Acreditación (Superintendencia de Salud) · 90 características</p>
+</header>
+<div class="wrap">
+
+  <div class="toolbar">
+    <button class="btn" id="btnInv">⚙️ Inventario de servicios</button>
+    <button class="btn" id="btnImport">⬆️ Importar JSON/CSV</button>
+    <button class="btn" id="btnExportJson">⬇️ Exportar JSON</button>
+    <button class="btn" id="btnExportCsv">⬇️ Exportar CSV</button>
+    <input type="file" id="fileInput" accept=".json,.csv,application/json,text/csv" style="display:none">
+    <span class="spacer"></span>
+    <button class="btn ghost" id="btnReset">↺ Restablecer</button>
+    <span class="saved" id="saved"></span>
+  </div>
+
+  <div class="cards" id="cards"></div>
+  <div class="progress"><i id="globalBar" style="width:0%"></i></div>
+  <div class="muted" id="globalLbl" style="font-size:12.5px;margin-top:6px"></div>
+
+  <div class="panel">
+    <details class="byamb">
+      <summary>Avance por ámbito</summary>
+      <div class="ambgrid" id="ambgrid"></div>
+    </details>
+  </div>
+
+  <div class="filters">
+    <select id="fAmbito"></select>
+    <select id="fEstado"></select>
+    <select id="fPrioridad">
+      <option value="">Prioridad: todas</option>
+      <option value="Alta">Prioridad Alta</option>
+      <option value="Normal">Prioridad Normal</option>
+    </select>
+    <input type="search" id="fSearch" placeholder="Buscar código o característica…">
+    <span class="count" id="count"></span>
+  </div>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr>
+        <th>Código</th><th>Característica</th><th>Ámbito</th><th>Umbral</th>
+        <th>Prioridad</th><th>Estado</th><th>% Av.</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Drawer detalle -->
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="dh"><div class="code" id="dCode"></div><h3 id="dCarac"></h3>
+    <div class="muted" id="dMeta" style="font-size:12px;margin-top:4px"></div></div>
+  <div class="db" id="dBody"></div>
+  <div class="df"><span class="muted" id="dHint"></span><button class="btn primary" id="dClose">Cerrar</button></div>
+</aside>
+
+<!-- Modal inventario -->
+<div class="modal" id="modal">
+  <div class="box">
+    <div class="mh"><h3>Inventario de servicios · CESFAM Tongoy</h3>
+      <p>Marca qué presta o compra el establecimiento. Lo que quede en <b>No presta</b> pasa a "No aplica" y se excluye del cálculo.</p></div>
+    <div class="mb" id="invBody"></div>
+    <div class="mf">
+      <button class="btn" id="btnSugerencia">Aplicar sugerencia APS típica</button>
+      <button class="btn" id="btnTodas">Marcar todas como "Presta"</button>
+      <span class="spacer"></span>
+      <button class="btn primary" id="invClose">Listo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SEED = {"meta": {"prestador": "CESFAM Tongoy", "pauta": "Manual del Estándar General de Acreditación — Atención Abierta (Superintendencia de Salud)", "version_datos": "2026-11-26", "total_caracteristicas": 90, "estados": ["Pendiente", "En proceso", "Cumple", "No cumple", "No aplica"], "prioridades": ["Alta", "Normal"], "campos": ["id", "ambito", "ambito_nombre", "componente", "codigo", "caracteristica", "umbral_pct", "umbral_texto", "prioridad", "estado", "avance_pct", "evidencia", "responsable", "fecha_revision", "brecha", "accion", "observaciones"]}, "caracteristicas": [{"id": 1, "ambito": "DP", "ambito_nombre": "Dignidad del Paciente", "componente": "DP-1", "codigo": "DP-1.1", "caracteristica": "Derechos explícitos informados a los pacientes", "umbral_pct": 80, "umbral_texto": "≥80%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 2, "ambito": "DP", "ambito_nombre": "Dignidad del Paciente", "componente": "DP-1", "codigo": "DP-1.2", "caracteristica": "Gestión de reclamos", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 3, "ambito": "DP", "ambito_nombre": "Dignidad del Paciente", "componente": "DP-1", "codigo": "DP-1.3", "caracteristica": "Evaluación del respeto de derechos (percepción de usuarios)", "umbral_pct": 66, "umbral_texto": "≥66%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 4, "ambito": "DP", "ambito_nombre": "Dignidad del Paciente", "componente": "DP-2", "codigo": "DP-2.1", "caracteristica": "Consentimiento informado en procedimientos de mayor riesgo", "umbral_pct": 80, "umbral_texto": "≥80%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 5, "ambito": "DP", "ambito_nombre": "Dignidad del Paciente", "componente": "DP-3", "codigo": "DP-3.1", "caracteristica": "Investigación en seres humanos aprobada por comité de ética", "umbral_pct": 66, "umbral_texto": "≥66%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 6, "ambito": "DP", "ambito_nombre": "Dignidad del Paciente", "componente": "DP-4", "codigo": "DP-4.1", "caracteristica": "Convenios docente-asistenciales", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 7, "ambito": "DP", "ambito_nombre": "Dignidad del Paciente", "componente": "DP-4", "codigo": "DP-4.2", "caracteristica": "Actividades de alumnos de pregrado definidas y evaluadas", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 8, "ambito": "DP", "ambito_nombre": "Dignidad del Paciente", "componente": "DP-5", "codigo": "DP-5.1", "caracteristica": "Acceso a comité de ética asistencial", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 9, "ambito": "CAL", "ambito_nombre": "Gestión de la Calidad", "componente": "CAL-1", "codigo": "CAL-1.1", "caracteristica": "Política y programa de mejoría continua con evaluación anual", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 10, "ambito": "GCL", "ambito_nombre": "Gestión Clínica", "componente": "GCL-1", "codigo": "GCL-1.1", "caracteristica": "Evaluación preanestésica", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 11, "ambito": "GCL", "ambito_nombre": "Gestión Clínica", "componente": "GCL-1", "codigo": "GCL-1.2", "caracteristica": "Selección de pacientes para cirugía mayor ambulatoria (CMA)", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 12, "ambito": "GCL", "ambito_nombre": "Gestión Clínica", "componente": "GCL-1", "codigo": "GCL-1.3", "caracteristica": "Atención de enfermería", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 13, "ambito": "GCL", "ambito_nombre": "Gestión Clínica", "componente": "GCL-1", "codigo": "GCL-1.4", "caracteristica": "Uso de anticoagulantes orales", "umbral_pct": 66, "umbral_texto": "≥66%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 14, "ambito": "GCL", "ambito_nombre": "Gestión Clínica", "componente": "GCL-1", "codigo": "GCL-1.5", "caracteristica": "Reanimación cardiopulmonar", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 15, "ambito": "GCL", "ambito_nombre": "Gestión Clínica", "componente": "GCL-1", "codigo": "GCL-1.6", "caracteristica": "Indicación de transfusión", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 16, "ambito": "GCL", "ambito_nombre": "Gestión Clínica", "componente": "GCL-1", "codigo": "GCL-1.7", "caracteristica": "Decisiones de tratamiento oncológico", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 17, "ambito": "GCL", "ambito_nombre": "Gestión Clínica", "componente": "GCL-1", "codigo": "GCL-1.8", "caracteristica": "Registro, rotulación, traslado y recepción de biopsias", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 18, "ambito": "GCL", "ambito_nombre": "Gestión Clínica", "componente": "GCL-1", "codigo": "GCL-1.9", "caracteristica": "Identificación del paciente", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 19, "ambito": "GCL", "ambito_nombre": "Gestión Clínica", "componente": "GCL-2", "codigo": "GCL-2.1", "caracteristica": "Prevención de eventos adversos en CMA", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 20, "ambito": "GCL", "ambito_nombre": "Gestión Clínica", "componente": "GCL-2", "codigo": "GCL-2.2", "caracteristica": "Vigilancia de eventos adversos", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 21, "ambito": "GCL", "ambito_nombre": "Gestión Clínica", "componente": "GCL-3", "codigo": "GCL-3.1", "caracteristica": "Estructura organizacional de prevención y control de IIH", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 22, "ambito": "GCL", "ambito_nombre": "Gestión Clínica", "componente": "GCL-3", "codigo": "GCL-3.2", "caracteristica": "Supervisión del cumplimiento de la normativa de IIH", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 23, "ambito": "AOC", "ambito_nombre": "Acceso, Oportunidad y Continuidad de la Atención", "componente": "AOC-1", "codigo": "AOC-1.1", "caracteristica": "Atención inmediata en emergencia con riesgo vital", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 24, "ambito": "AOC", "ambito_nombre": "Acceso, Oportunidad y Continuidad de la Atención", "componente": "AOC-1", "codigo": "AOC-1.2", "caracteristica": "Notificación de resultados críticos (AP, Laboratorio, Imagenología)", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 25, "ambito": "AOC", "ambito_nombre": "Acceso, Oportunidad y Continuidad de la Atención", "componente": "AOC-2", "codigo": "AOC-2.1", "caracteristica": "Derivación de urgencias que exceden la capacidad", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 26, "ambito": "RH", "ambito_nombre": "Competencias del Recurso Humano", "componente": "RH-1", "codigo": "RH-1.1", "caracteristica": "Habilitación de médicos y cirujanos dentistas", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 27, "ambito": "RH", "ambito_nombre": "Competencias del Recurso Humano", "componente": "RH-1", "codigo": "RH-1.2", "caracteristica": "Habilitación de técnicos y profesionales de salud", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 28, "ambito": "RH", "ambito_nombre": "Competencias del Recurso Humano", "componente": "RH-1", "codigo": "RH-1.3", "caracteristica": "Especialidades médicas y odontológicas", "umbral_pct": 50, "umbral_texto": "≥50%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 29, "ambito": "RH", "ambito_nombre": "Competencias del Recurso Humano", "componente": "RH-2", "codigo": "RH-2.1", "caracteristica": "Programa de inducción institucional", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 30, "ambito": "RH", "ambito_nombre": "Competencias del Recurso Humano", "componente": "RH-2", "codigo": "RH-2.2", "caracteristica": "Programa de orientación por unidad", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 31, "ambito": "RH", "ambito_nombre": "Competencias del Recurso Humano", "componente": "RH-3", "codigo": "RH-3.1", "caracteristica": "Capacitación en reanimación cardiopulmonar", "umbral_pct": 50, "umbral_texto": "≥50%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 32, "ambito": "RH", "ambito_nombre": "Competencias del Recurso Humano", "componente": "RH-4", "codigo": "RH-4.1", "caracteristica": "Programa de control de riesgos a exposiciones", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 33, "ambito": "RH", "ambito_nombre": "Competencias del Recurso Humano", "componente": "RH-4", "codigo": "RH-4.2", "caracteristica": "Manejo de accidentes con material contaminado", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 34, "ambito": "REG", "ambito_nombre": "Registros", "componente": "REG-1", "codigo": "REG-1.1", "caracteristica": "Ficha clínica única", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 35, "ambito": "REG", "ambito_nombre": "Registros", "componente": "REG-1", "codigo": "REG-1.2", "caracteristica": "Registros clínicos estandarizados", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 36, "ambito": "REG", "ambito_nombre": "Registros", "componente": "REG-1", "codigo": "REG-1.3", "caracteristica": "Información escrita entregada al paciente", "umbral_pct": 50, "umbral_texto": "≥50%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 37, "ambito": "REG", "ambito_nombre": "Registros", "componente": "REG-1", "codigo": "REG-1.4", "caracteristica": "Conservación, integridad y confidencialidad de fichas", "umbral_pct": 66, "umbral_texto": "≥66%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 38, "ambito": "EQ", "ambito_nombre": "Seguridad del Equipamiento", "componente": "EQ-1", "codigo": "EQ-1.1", "caracteristica": "Procedimiento de adquisición de equipamiento", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 39, "ambito": "EQ", "ambito_nombre": "Seguridad del Equipamiento", "componente": "EQ-1", "codigo": "EQ-1.2", "caracteristica": "Vida útil y reposición de equipamiento crítico", "umbral_pct": 50, "umbral_texto": "≥50%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 40, "ambito": "EQ", "ambito_nombre": "Seguridad del Equipamiento", "componente": "EQ-2", "codigo": "EQ-2.1", "caracteristica": "Mantenimiento preventivo de equipos críticos", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 41, "ambito": "EQ", "ambito_nombre": "Seguridad del Equipamiento", "componente": "EQ-2", "codigo": "EQ-2.2", "caracteristica": "Mantenimiento preventivo en unidades de apoyo", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 42, "ambito": "EQ", "ambito_nombre": "Seguridad del Equipamiento", "componente": "EQ-3", "codigo": "EQ-3.1", "caracteristica": "Operación de equipos por personal autorizado", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 43, "ambito": "INS", "ambito_nombre": "Seguridad de las Instalaciones", "componente": "INS-1", "codigo": "INS-1.1", "caracteristica": "Evaluación y mitigación del riesgo de incendio", "umbral_pct": 80, "umbral_texto": "≥80%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 44, "ambito": "INS", "ambito_nombre": "Seguridad de las Instalaciones", "componente": "INS-2", "codigo": "INS-2.1", "caracteristica": "Planes de evacuación actualizados y probados", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 45, "ambito": "INS", "ambito_nombre": "Seguridad de las Instalaciones", "componente": "INS-2", "codigo": "INS-2.2", "caracteristica": "Señalética de vías de evacuación", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 46, "ambito": "INS", "ambito_nombre": "Seguridad de las Instalaciones", "componente": "INS-3", "codigo": "INS-3.1", "caracteristica": "Mantenimiento preventivo de instalaciones", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 47, "ambito": "INS", "ambito_nombre": "Seguridad de las Instalaciones", "componente": "INS-3", "codigo": "INS-3.2", "caracteristica": "Contingencia por interrupción del suministro eléctrico", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 48, "ambito": "APL", "ambito_nombre": "Laboratorio Clínico", "componente": "APL-1", "codigo": "APL-1.1", "caracteristica": "Exámenes comprados a terceros acreditados", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 49, "ambito": "APL", "ambito_nombre": "Laboratorio Clínico", "componente": "APL-1", "codigo": "APL-1.2", "caracteristica": "Etapa pre-analítica", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 50, "ambito": "APL", "ambito_nombre": "Laboratorio Clínico", "componente": "APL-1", "codigo": "APL-1.3", "caracteristica": "Etapas analítica y post-analítica", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 51, "ambito": "APL", "ambito_nombre": "Laboratorio Clínico", "componente": "APL-1", "codigo": "APL-1.4", "caracteristica": "Control de calidad externo", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 52, "ambito": "APL", "ambito_nombre": "Laboratorio Clínico", "componente": "APL-1", "codigo": "APL-1.5", "caracteristica": "Bioseguridad", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 53, "ambito": "APF", "ambito_nombre": "Farmacia", "componente": "APF-1", "codigo": "APF-1.1", "caracteristica": "Antineoplásicos comprados a terceros", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 54, "ambito": "APF", "ambito_nombre": "Farmacia", "componente": "APF-1", "codigo": "APF-1.2", "caracteristica": "Estructura de adquisición de medicamentos e insumos", "umbral_pct": 60, "umbral_texto": "≥60%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 55, "ambito": "APF", "ambito_nombre": "Farmacia", "componente": "APF-1", "codigo": "APF-1.3", "caracteristica": "Procedimientos para prevenir errores de dispensación", "umbral_pct": 66, "umbral_texto": "≥66%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 56, "ambito": "APF", "ambito_nombre": "Farmacia", "componente": "APF-1", "codigo": "APF-1.4", "caracteristica": "Estandarización de procedimientos de medicamentos", "umbral_pct": 50, "umbral_texto": "≥50%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 57, "ambito": "APF", "ambito_nombre": "Farmacia", "componente": "APF-1", "codigo": "APF-1.5", "caracteristica": "Preparación, almacenamiento y desecho de antineoplásicos", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 58, "ambito": "APE", "ambito_nombre": "Esterilización", "componente": "APE-1", "codigo": "APE-1.1", "caracteristica": "Prestaciones compradas a terceros acreditados", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 59, "ambito": "APE", "ambito_nombre": "Esterilización", "componente": "APE-1", "codigo": "APE-1.2", "caracteristica": "Lavado, preparación y esterilización centralizados", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 60, "ambito": "APE", "ambito_nombre": "Esterilización", "componente": "APE-1", "codigo": "APE-1.3", "caracteristica": "Métodos de esterilización según normas técnicas", "umbral_pct": 66, "umbral_texto": "≥66%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 61, "ambito": "APE", "ambito_nombre": "Esterilización", "componente": "APE-1", "codigo": "APE-1.4", "caracteristica": "Almacenamiento de material estéril", "umbral_pct": 66, "umbral_texto": "≥66%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 62, "ambito": "APE", "ambito_nombre": "Esterilización", "componente": "APE-1", "codigo": "APE-1.5", "caracteristica": "Desinfección de alto nivel (DAN)", "umbral_pct": 66, "umbral_texto": "≥66%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 63, "ambito": "APT", "ambito_nombre": "Transporte de Pacientes", "componente": "APT-1", "codigo": "APT-1.1", "caracteristica": "Transporte comprado a terceros acreditados", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 64, "ambito": "APT", "ambito_nombre": "Transporte de Pacientes", "componente": "APT-1", "codigo": "APT-1.2", "caracteristica": "Proceso de transporte de pacientes", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 65, "ambito": "APD", "ambito_nombre": "Diálisis", "componente": "APD-1", "codigo": "APD-1.1", "caracteristica": "Procedimientos comprados a terceros acreditados", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 66, "ambito": "APD", "ambito_nombre": "Diálisis", "componente": "APD-1", "codigo": "APD-1.2", "caracteristica": "Protocolos de hemodiálisis / peritoneodiálisis y registros", "umbral_pct": 66, "umbral_texto": "≥66%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 67, "ambito": "APD", "ambito_nombre": "Diálisis", "componente": "APD-1", "codigo": "APD-1.3", "caracteristica": "Prevención de infecciones asociadas a diálisis", "umbral_pct": 66, "umbral_texto": "≥66%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 68, "ambito": "APD", "ambito_nombre": "Diálisis", "componente": "APD-1", "codigo": "APD-1.4", "caracteristica": "Control de calidad del agua para hemodiálisis", "umbral_pct": 66, "umbral_texto": "≥66%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 69, "ambito": "APR", "ambito_nombre": "Radioterapia", "componente": "APR-1", "codigo": "APR-1.1", "caracteristica": "Procedimientos contratados a terceros acreditados", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 70, "ambito": "APR", "ambito_nombre": "Radioterapia", "componente": "APR-1", "codigo": "APR-1.2", "caracteristica": "Protocolos de radioterapia actualizados", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 71, "ambito": "APR", "ambito_nombre": "Radioterapia", "componente": "APR-1", "codigo": "APR-1.3", "caracteristica": "Sistema de control de calidad de radioterapia", "umbral_pct": 66, "umbral_texto": "≥66%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 72, "ambito": "APR", "ambito_nombre": "Radioterapia", "componente": "APR-1", "codigo": "APR-1.4", "caracteristica": "Registros estandarizados de radioterapia", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 73, "ambito": "APA", "ambito_nombre": "Anatomía Patológica", "componente": "APA-1", "codigo": "APA-1.1", "caracteristica": "Exámenes comprados a terceros acreditados", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 74, "ambito": "APA", "ambito_nombre": "Anatomía Patológica", "componente": "APA-1", "codigo": "APA-1.2", "caracteristica": "Etapa pre-analítica", "umbral_pct": 66, "umbral_texto": "≥66%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 75, "ambito": "APA", "ambito_nombre": "Anatomía Patológica", "componente": "APA-1", "codigo": "APA-1.3", "caracteristica": "Etapas analítica y post-analítica", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 76, "ambito": "APA", "ambito_nombre": "Anatomía Patológica", "componente": "APA-1", "codigo": "APA-1.4", "caracteristica": "Bioseguridad", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 77, "ambito": "APQ", "ambito_nombre": "Quimioterapia", "componente": "APQ-1", "codigo": "APQ-1.1", "caracteristica": "Procedimientos comprados a terceros acreditados", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 78, "ambito": "APQ", "ambito_nombre": "Quimioterapia", "componente": "APQ-1", "codigo": "APQ-1.2", "caracteristica": "Protocolos y registros de quimioterapia", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 79, "ambito": "APQ", "ambito_nombre": "Quimioterapia", "componente": "APQ-1", "codigo": "APQ-1.3", "caracteristica": "Procedimientos y vigilancia de catéteres vasculares", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 80, "ambito": "API", "ambito_nombre": "Imagenología", "componente": "API-1", "codigo": "API-1.1", "caracteristica": "Procedimientos comprados a terceros acreditados", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 81, "ambito": "API", "ambito_nombre": "Imagenología", "componente": "API-1", "codigo": "API-1.2", "caracteristica": "Procedimientos imagenológicos con riesgo (contraste, sedación, anestesia)", "umbral_pct": 66, "umbral_texto": "≥66%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 82, "ambito": "API", "ambito_nombre": "Imagenología", "componente": "API-1", "codigo": "API-1.3", "caracteristica": "Evaluación de solicitudes e indicaciones al paciente", "umbral_pct": 66, "umbral_texto": "≥66%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 83, "ambito": "APK", "ambito_nombre": "Kinesioterapia", "componente": "APK-1", "codigo": "APK-1.1", "caracteristica": "Procedimientos comprados a terceros acreditados", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 84, "ambito": "APK", "ambito_nombre": "Kinesioterapia", "componente": "APK-1", "codigo": "APK-1.2", "caracteristica": "Kinesioterapia respiratoria", "umbral_pct": 75, "umbral_texto": "≥75%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 85, "ambito": "APK", "ambito_nombre": "Kinesioterapia", "componente": "APK-1", "codigo": "APK-1.3", "caracteristica": "Rehabilitación kinésica", "umbral_pct": 66, "umbral_texto": "≥66%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 86, "ambito": "APTr", "ambito_nombre": "Medicina Transfusional", "componente": "APTr-1", "codigo": "APTr-1.1", "caracteristica": "Servicios comprados a terceros acreditados", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 87, "ambito": "APTr", "ambito_nombre": "Medicina Transfusional", "componente": "APTr-1", "codigo": "APTr-1.2", "caracteristica": "Procedimientos del proceso de transfusión", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 88, "ambito": "APTr", "ambito_nombre": "Medicina Transfusional", "componente": "APTr-1", "codigo": "APTr-1.3", "caracteristica": "Trazabilidad de componentes sanguíneos", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Alta", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 89, "ambito": "APDs", "ambito_nombre": "Atención de Donantes de Sangre", "componente": "APDs-1", "codigo": "APDs-1.1", "caracteristica": "Procedimientos de donación de sangre", "umbral_pct": 66, "umbral_texto": "≥66%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}, {"id": 90, "ambito": "APDs", "ambito_nombre": "Atención de Donantes de Sangre", "componente": "APDs-1", "codigo": "APDs-1.2", "caracteristica": "Trazabilidad de componentes sanguíneos", "umbral_pct": 100, "umbral_texto": "100%", "prioridad": "Normal", "estado": "Pendiente", "avance_pct": null, "evidencia": "", "responsable": "", "fecha_revision": "", "brecha": "", "accion": "", "observaciones": ""}]};
+const LS_KEY = "acred_tongoy_v1";
+const ESTADOS = SEED.meta.estados;
+const SUGERENCIA_NO_PRESTA = ["APR","APD","APQ","APTr","APDs","APA"];
+const MAIN = ["DP","CAL","GCL","AOC","RH","REG","EQ","INS"];
+
+// orden y nombres de ámbitos
+const AMB = [];
+const AMB_NAME = {};
+SEED.caracteristicas.forEach(c=>{ if(!AMB_NAME[c.ambito]){ AMB.push(c.ambito); AMB_NAME[c.ambito]=c.ambito_nombre; }});
+
+function freshState(){
+  const inv = {}; AMB.forEach(a=> inv[a]=true);
+  return { inventario: inv, caracteristicas: JSON.parse(JSON.stringify(SEED.caracteristicas)), updated:new Date().toISOString() };
+}
+function load(){
+  try{ const raw = localStorage.getItem(LS_KEY); if(raw){ const s=JSON.parse(raw);
+    if(s && Array.isArray(s.caracteristicas) && s.caracteristicas.length){ if(!s.inventario){ s.inventario={}; AMB.forEach(a=>s.inventario[a]=true);} return s; } } }catch(e){}
+  return freshState();
+}
+let state = load();
+let saveTimer=null;
+function persist(){
+  state.updated=new Date().toISOString();
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); flashSaved("Guardado "+new Date().toLocaleTimeString("es-CL",{hour:"2-digit",minute:"2-digit"})); }catch(e){ flashSaved("Sin guardado local — usa Exportar"); } },150);
+}
+function flashSaved(t){ document.getElementById("saved").textContent=t; }
+
+const $=s=>document.querySelector(s);
+const tbody=$("#tbody");
+
+function estadoEfectivo(c){ return state.inventario[c.ambito]===false ? "No aplica" : c.estado; }
+
+function metrics(){
+  const chars=state.caracteristicas.map(c=>({...c,estado:estadoEfectivo(c)}));
+  const aplic=chars.filter(c=>c.estado!=="No aplica");
+  const by=e=>chars.filter(c=>c.estado===e).length;
+  const cumple=by("Cumple");
+  return {
+    total:chars.length, aplic:aplic.length, cumple,
+    nocumple:by("No cumple"), proceso:by("En proceso"), pend:by("Pendiente"), na:by("No aplica"),
+    pct: aplic.length? Math.round(cumple/aplic.length*100):0
+  };
+}
+
+function renderDashboard(){
+  const m=metrics();
+  $("#cards").innerHTML=[
+    ["Aplicables",m.aplic,""],["Cumplen",m.cumple,"good"],["No cumplen",m.nocumple,"bad"],
+    ["En proceso",m.proceso,"warn"],["Pendientes",m.pend,""],["No aplica",m.na,""],
+    ["% Cumplimiento",m.pct+"%","good"]
+  ].map(([k,v,cl])=>`<div class="card ${cl}"><div class="k">${k}</div><div class="v">${v}</div></div>`).join("");
+  $("#globalBar").style.width=m.pct+"%";
+  $("#globalLbl").textContent=`${m.cumple} de ${m.aplic} características aplicables cumplen su umbral · ${m.na} en "No aplica".`;
+  // por ámbito
+  const g=$("#ambgrid"); g.innerHTML="";
+  AMB.forEach(a=>{
+    const cs=state.caracteristicas.filter(c=>c.ambito===a).map(c=>({...c,estado:estadoEfectivo(c)}));
+    const ap=cs.filter(c=>c.estado!=="No aplica"); const cu=cs.filter(c=>c.estado==="Cumple").length;
+    const pct=ap.length?Math.round(cu/ap.length*100):0;
+    const naAll=ap.length===0;
+    g.innerHTML+=`<div class="ambrow"><div class="top"><span><b>${a}</b> ${AMB_NAME[a]}</span><span class="muted">${naAll?"No aplica":cu+"/"+ap.length}</span></div><div class="bar"><i style="width:${naAll?0:pct}%;${naAll?'background:#cbd5e1':''}"></i></div></div>`;
+  });
+}
+
+function buildFilters(){
+  const fa=$("#fAmbito"); fa.innerHTML='<option value="">Ámbito: todos</option>'+AMB.map(a=>`<option value="${a}">${a} — ${AMB_NAME[a]}</option>`).join("");
+  const fe=$("#fEstado"); fe.innerHTML='<option value="">Estado: todos</option>'+ESTADOS.map(e=>`<option value="${e}">${e}</option>`).join("");
+}
+
+function currentFilter(){
+  return { amb:$("#fAmbito").value, est:$("#fEstado").value, pri:$("#fPrioridad").value, q:$("#fSearch").value.trim().toLowerCase() };
+}
+
+function renderTable(){
+  const f=currentFilter(); tbody.innerHTML="";
+  let n=0;
+  state.caracteristicas.forEach((c,idx)=>{
+    const est=estadoEfectivo(c);
+    if(f.amb && c.ambito!==f.amb) return;
+    if(f.est && est!==f.est) return;
+    if(f.pri && c.prioridad!==f.pri) return;
+    if(f.q && !(c.codigo.toLowerCase().includes(f.q)||c.caracteristica.toLowerCase().includes(f.q))) return;
+    n++;
+    const locked = state.inventario[c.ambito]===false;
+    const tr=document.createElement("tr");
+    if(est==="No aplica") tr.className="na";
+    tr.innerHTML=`
+      <td class="code">${c.codigo}</td>
+      <td class="carac">${c.caracteristica}</td>
+      <td class="muted">${c.ambito}</td>
+      <td class="umbral ${c.umbral_pct===100?'u100':''}">${c.umbral_texto}</td>
+      <td><span class="chip ${c.prioridad==='Alta'?'alta':'normal'}">${c.prioridad}</span></td>
+      <td>${estadoSelect(idx,est,locked)}</td>
+      <td>${locked||est==='No aplica'?'<span class="muted">—</span>':`<input class="av" type="number" min="0" max="100" value="${c.avance_pct==null?'':c.avance_pct}" data-idx="${idx}">`}</td>`;
+    tr.addEventListener("click",ev=>{ if(ev.target.closest("select,input")) return; openDrawer(idx); });
+    tbody.appendChild(tr);
+  });
+  $("#count").textContent=`${n} de ${state.caracteristicas.length} características`;
+  tbody.querySelectorAll("select.estado").forEach(s=>s.addEventListener("change",e=>{
+    const i=+e.target.dataset.idx; state.caracteristicas[i].estado=e.target.value; persist(); renderDashboard(); e.target.dataset.e=e.target.value;
+    if(e.target.value==="No aplica"||estadoEfectivo(state.caracteristicas[i])==="No aplica") renderTable();
+  }));
+  tbody.querySelectorAll("input.av").forEach(inp=>inp.addEventListener("change",e=>{
+    const i=+e.target.dataset.idx; let v=e.target.value===""?null:Math.max(0,Math.min(100,parseInt(e.target.value)||0));
+    state.caracteristicas[i].avance_pct=v; if(v!==null)e.target.value=v; persist();
+  }));
+}
+
+function estadoSelect(idx,est,locked){
+  return `<select class="estado" data-idx="${idx}" data-e="${est}" ${locked?'disabled':''}>`+
+    ESTADOS.map(e=>`<option ${e===est?'selected':''}>${e}</option>`).join("")+`</select>`;
+}
+
+// ---- Drawer ----
+let drawerIdx=null;
+function openDrawer(idx){
+  drawerIdx=idx; const c=state.caracteristicas[idx]; const locked=state.inventario[c.ambito]===false;
+  $("#dCode").textContent=c.codigo+" · "+c.ambito_nombre;
+  $("#dCarac").textContent=c.caracteristica;
+  $("#dMeta").textContent=`Componente ${c.componente} · Umbral ${c.umbral_texto} · Prioridad ${c.prioridad}`;
+  const na = locked ? `<div class="nanote">Servicio marcado como <b>No presta</b> en el inventario → "No aplica". Cámbialo en Inventario de servicios para habilitar la evaluación.</div>`:"";
+  const f=(label,html)=>`<div class="field"><label>${label}</label>${html}</div>`;
+  const dis=locked?'disabled':'';
+  $("#dBody").innerHTML=na+
+    f("Estado",`<select id="dEstado" ${dis}>${ESTADOS.map(e=>`<option ${e===estadoEfectivo(c)?'selected':''}>${e}</option>`).join("")}</select>`)+
+    f("% Avance (elementos medibles cumplidos)",`<input id="dAv" type="number" min="0" max="100" value="${c.avance_pct==null?'':c.avance_pct}" ${dis}>`)+
+    f("Evidencia disponible",`<textarea id="dEv" ${dis}>${esc(c.evidencia)}</textarea>`)+
+    f("Responsable",`<input id="dResp" value="${esc(c.responsable)}" ${dis}>`)+
+    f("Fecha de revisión",`<input id="dFecha" type="date" value="${esc(c.fecha_revision)}" ${dis}>`)+
+    f("Brecha",`<textarea id="dBr" ${dis}>${esc(c.brecha)}</textarea>`)+
+    f("Acción correctiva",`<textarea id="dAc" ${dis}>${esc(c.accion)}</textarea>`)+
+    f("Observaciones",`<textarea id="dObs">${esc(c.observaciones)}</textarea>`);
+  $("#dHint").textContent="Los cambios se guardan solos";
+  bindDrawer(idx,locked);
+  $("#overlay").classList.add("show"); $("#drawer").classList.add("show"); $("#drawer").setAttribute("aria-hidden","false");
+}
+function bindDrawer(idx,locked){
+  const c=state.caracteristicas[idx];
+  const upd=(k,v)=>{ c[k]=v; persist(); };
+  if(!locked){
+    $("#dEstado").onchange=e=>{ c.estado=e.target.value; persist(); renderDashboard(); renderTable(); };
+    $("#dAv").onchange=e=>{ let v=e.target.value===""?null:Math.max(0,Math.min(100,parseInt(e.target.value)||0)); c.avance_pct=v; persist(); };
+    $("#dEv").oninput=e=>upd("evidencia",e.target.value);
+    $("#dResp").oninput=e=>upd("responsable",e.target.value);
+    $("#dFecha").onchange=e=>upd("fecha_revision",e.target.value);
+    $("#dBr").oninput=e=>upd("brecha",e.target.value);
+    $("#dAc").oninput=e=>upd("accion",e.target.value);
+  }
+  $("#dObs").oninput=e=>upd("observaciones",e.target.value);
+}
+function closeDrawer(){ $("#overlay").classList.remove("show"); $("#drawer").classList.remove("show"); $("#drawer").setAttribute("aria-hidden","true"); drawerIdx=null; }
+function esc(s){ return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+// ---- Inventario ----
+function renderInventario(){
+  const body=$("#invBody"); body.innerHTML="";
+  const sec=(title,list)=>{
+    let h=`<div class="grp">${title}</div>`;
+    list.forEach(a=>{
+      const on=state.inventario[a]!==false;
+      const nchar=state.caracteristicas.filter(c=>c.ambito===a).length;
+      h+=`<div class="srow"><div class="nm"><b>${a}</b> ${AMB_NAME[a]} <span class="cc">· ${nchar} caract.</span></div>
+        <label class="switch"><input type="checkbox" data-amb="${a}" ${on?'checked':''}><span class="slider"></span></label></div>`;
+    });
+    return h;
+  };
+  body.innerHTML = sec("Ámbitos del cuerpo principal (habitualmente aplican)", AMB.filter(a=>MAIN.includes(a)))
+                 + sec("Servicios de apoyo diagnóstico o terapéutico", AMB.filter(a=>!MAIN.includes(a)));
+  body.querySelectorAll('input[type=checkbox]').forEach(ch=>ch.addEventListener("change",e=>{
+    setServicio(e.target.dataset.amb, e.target.checked);
+  }));
+}
+function setServicio(amb,presta){
+  state.inventario[amb]=presta;
+  state.caracteristicas.forEach(c=>{ if(c.ambito===amb){
+    if(!presta){ if(c.estado!=="No aplica"){ c._prev=c.estado; c.estado="No aplica"; } }
+    else { if(c.estado==="No aplica"){ c.estado=c._prev||"Pendiente"; delete c._prev; } }
+  }});
+  persist(); renderDashboard(); renderTable();
+}
+
+// ---- Export / Import ----
+async function saveFile(name,text){
+  try{
+    const dl = (window.claude && window.claude.use) ? await window.claude.use("downloads") : null;
+    if(dl && dl.save){ await dl.save({filename:name, data:text}); flashSaved("Archivo exportado"); return; }
+  }catch(err){ if(err && err.code==="declined"){ return; } }
+  try{
+    const blob=new Blob([text],{type:"application/octet-stream"}); const url=URL.createObjectURL(blob);
+    const a=document.createElement("a"); a.href=url; a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(url),500);
+  }catch(e2){ alert("No se pudo exportar el archivo en este visor. Prueba abrir el artefacto en una ventana aparte."); }
+}
+async function exportJson(){
+  const out={ meta:{...SEED.meta, prestador:"CESFAM Tongoy", exportado:new Date().toISOString(), inventario:state.inventario},
+    caracteristicas: state.caracteristicas.map(c=>{const o={...c};o.estado=estadoEfectivo(c);delete o._prev;return o;}) };
+  return saveFile("acreditacion_tongoy_estado.json", JSON.stringify(out,null,2));
+}
+async function exportCsv(){
+  const cols=SEED.meta.campos;
+  const head=cols.join(",");
+  const esc=v=>{ v=v==null?"":String(v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; };
+  const lines=state.caracteristicas.map(c=>{ const o={...c,estado:estadoEfectivo(c)}; return cols.map(k=>esc(o[k])).join(","); });
+  return saveFile("acreditacion_tongoy_estado.csv", "﻿"+head+"\n"+lines.join("\n"));
+}
+function parseCSV(text){
+  text=text.replace(/^﻿/,"");
+  const rows=[]; let i=0,f="",row=[],q=false;
+  while(i<text.length){ const ch=text[i];
+    if(q){ if(ch==='"'){ if(text[i+1]==='"'){f+='"';i+=2;continue;} q=false;i++;continue;} f+=ch;i++;continue; }
+    if(ch==='"'){q=true;i++;continue;}
+    if(ch===','){row.push(f);f="";i++;continue;}
+    if(ch==='\r'){i++;continue;}
+    if(ch==='\n'){row.push(f);rows.push(row);row=[];f="";i++;continue;}
+    f+=ch;i++;
+  }
+  if(f.length||row.length){row.push(f);rows.push(row);}
+  if(!rows.length) return [];
+  const head=rows[0].map(h=>h.trim());
+  return rows.slice(1).filter(r=>r.some(x=>x!=="")).map(r=>{const o={};head.forEach((h,j)=>o[h]=r[j]!==undefined?r[j]:"");return o;});
+}
+function importFile(file){
+  const r=new FileReader();
+  r.onload=()=>{ try{
+    const txt=String(r.result); const t=txt.replace(/^﻿/,"").replace(/^\s+/,"");
+    let arr, meta=null, kind="CSV";
+    if(file.name.toLowerCase().endsWith(".csv") || (t[0]!=="{" && t[0]!=="[")){ arr=parseCSV(txt); }
+    else { const d=JSON.parse(txt); meta=d.meta||null; arr=Array.isArray(d)?d:d.caracteristicas; kind="JSON"; }
+    if(!Array.isArray(arr)||!arr.length) throw 0;
+    const byCode={}; arr.forEach(x=>{ if(x&&x.codigo) byCode[String(x.codigo).trim()]=x; });
+    const FLD=["estado","prioridad","evidencia","responsable","fecha_revision","brecha","accion","observaciones"];
+    state.caracteristicas=JSON.parse(JSON.stringify(SEED.caracteristicas)).map(base=>{
+      const s=byCode[base.codigo]; if(!s) return base; const m={...base};
+      FLD.forEach(k=>{ if(s[k]!==undefined && s[k]!=="") m[k]=String(s[k]); });
+      if(s.avance_pct!==undefined && s.avance_pct!==""){ const v=parseInt(s.avance_pct); m.avance_pct=isNaN(v)?null:Math.max(0,Math.min(100,v)); }
+      if(!ESTADOS.includes(m.estado)) m.estado=base.estado;
+      return m;
+    });
+    const inv={}; AMB.forEach(a=>inv[a]=true);
+    if(meta&&meta.inventario) Object.assign(inv,meta.inventario);
+    state.inventario=inv;
+    persist(); renderDashboard(); renderTable(); renderInventario();
+    flashSaved("Datos importados ("+kind+")");
+  }catch(e){ alert("No se pudo leer el archivo. Usa un JSON exportado por la herramienta, o un CSV con la columna 'codigo' y el mismo esquema de campos."); } };
+  r.readAsText(file);
+}
+
+// ---- wiring ----
+buildFilters();
+["#fAmbito","#fEstado","#fPrioridad"].forEach(s=>$(s).addEventListener("change",renderTable));
+$("#fSearch").addEventListener("input",renderTable);
+$("#btnInv").onclick=()=>{ renderInventario(); $("#modal").classList.add("show"); };
+$("#invClose").onclick=()=>$("#modal").classList.remove("show");
+$("#btnSugerencia").onclick=()=>{ AMB.forEach(a=>setServicio(a, !SUGERENCIA_NO_PRESTA.includes(a))); renderInventario(); };
+$("#btnTodas").onclick=()=>{ AMB.forEach(a=>setServicio(a,true)); renderInventario(); };
+$("#btnExportJson").onclick=exportJson;
+$("#btnExportCsv").onclick=exportCsv;
+$("#btnImport").onclick=()=>$("#fileInput").click();
+$("#fileInput").onchange=e=>{ if(e.target.files[0]) importFile(e.target.files[0]); e.target.value=""; };
+$("#btnReset").onclick=()=>{ if(confirm("Esto borra el avance guardado en este navegador y vuelve todo a Pendiente. ¿Continuar?")){ state=freshState(); persist(); renderDashboard(); renderTable(); renderInventario(); } };
+$("#dClose").onclick=closeDrawer; $("#overlay").onclick=closeDrawer;
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeDrawer(); $("#modal").classList.remove("show"); } });
+
+renderDashboard(); renderTable();
+flashSaved(state.updated?("Datos cargados"):"");
+</script>
+</body>
+</html>

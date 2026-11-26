@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual de uso · Seguimiento de Acreditación · CESFAM Tongoy</title>
+<style>
+:root{
+  --bg:#f5f7fa; --panel:#fff; --ink:#15233b; --ink2:#38485f; --muted:#64748b; --line:#e4e9f1;
+  --primary:#1f3a5f; --primary2:#2b5a8c; --accent:#0f7a6a; --accent2:#13a088;
+  --ok:#1b8a5a; --okbg:#e6f5ec; --warn:#b9770a; --warnbg:#fdf3e0; --bad:#c0392b; --badbg:#fbeceb;
+  --hl:#fff3bf; --ring:rgba(31,58,95,.12);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.65 "Iowan Old Style","Palatino Linotype",Georgia,serif;-webkit-font-smoothing:antialiased}
+.sans,nav,.chip,.kbd,.tag,.stat .k,.step .n,.toc,.card h3,.callout b,table{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.hero{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;padding:54px 24px 46px}
+.hero .in{max-width:860px;margin:0 auto}
+.hero .tag{display:inline-block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.82;
+  border:1px solid rgba(255,255,255,.4);padding:4px 10px;border-radius:999px;margin-bottom:16px}
+.hero h1{font-size:34px;line-height:1.18;margin:0 0 12px;font-weight:700}
+.hero p{font-size:17px;opacity:.92;margin:0;max-width:640px}
+.hero .meta{margin-top:20px;font-size:13px;opacity:.78;font-family:-apple-system,system-ui,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:10px 24px 80px}
+.lede{font-size:18px;color:var(--ink2);border-left:3px solid var(--accent);padding:6px 0 6px 18px;margin:26px 0}
+h2{font-size:25px;margin:46px 0 8px;letter-spacing:-.01em;scroll-margin-top:16px}
+h2 .num{color:var(--accent);font-weight:700;margin-right:10px}
+h3{font-size:19px;margin:26px 0 6px}
+p{margin:12px 0}
+a{color:var(--primary2)}
+.rule{height:1px;background:var(--line);border:0;margin:40px 0}
+mark{background:var(--hl);padding:0 3px;border-radius:3px}
+.toc{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin:28px 0;font-size:14.5px}
+.toc h4{margin:0 0 8px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.toc ol{margin:0;padding-left:20px;columns:2;column-gap:28px}
+.toc li{margin:4px 0;break-inside:avoid}
+.toc a{text-decoration:none;color:var(--ink2)} .toc a:hover{color:var(--primary2)}
+.min{background:#eef5f3;border:1px solid #d3e6e1;border-radius:14px;padding:16px 20px;margin:22px 0}
+.min .lab{font-family:-apple-system,system-ui,sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.min p{margin:6px 0 0;font-size:15.5px}
+.callout{border-radius:12px;padding:14px 16px 14px 48px;margin:18px 0;position:relative;font-size:15px;line-height:1.55;
+  background:var(--panel);border:1px solid var(--line)}
+.callout:before{position:absolute;left:14px;top:13px;font-size:20px}
+.callout b{font-family:-apple-system,system-ui,sans-serif;display:block;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:3px}
+.why{background:#f0f6ff;border-color:#d4e4fb} .why:before{content:"💡"} .why b{color:var(--primary2)}
+.tip{background:var(--okbg);border-color:#c7e9d5} .tip:before{content:"✅"} .tip b{color:var(--ok)}
+.warn{background:var(--warnbg);border-color:#f3dca9} .warn:before{content:"⚠️"} .warn b{color:var(--warn)}
+.key{background:#f6f2ff;border-color:#e0d7fb} .key:before{content:"🔑"} .key b{color:#6b4fc9}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:20px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 1px 2px var(--ring)}
+.card .ic{font-size:24px}
+.card h3{margin:8px 0 4px;font-size:16px}
+.card p{margin:0;font-size:14px;color:var(--ink2)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:22px 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center}
+.stat .v{font-size:30px;font-weight:800;color:var(--primary);font-family:-apple-system,system-ui,sans-serif;line-height:1}
+.stat .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin-top:6px}
+.stat.accent .v{color:var(--accent)} .stat.bad .v{color:var(--bad)}
+.steps{counter-reset:s;margin:20px 0;padding:0;list-style:none}
+.step{position:relative;padding:4px 0 18px 54px;margin:0}
+.step:not(:last-child):after{content:"";position:absolute;left:18px;top:34px;bottom:-4px;width:2px;background:var(--line)}
+.step .n{counter-increment:s;position:absolute;left:0;top:0;width:36px;height:36px;border-radius:50%;
+  background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+.step .n:before{content:counter(s)}
+.step h3{margin:4px 0 4px;font-size:17px}
+.step p{margin:4px 0;font-size:15px}
+table{border-collapse:collapse;width:100%;margin:18px 0;font-size:14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{background:#eef2f7;text-align:left;padding:9px 12px;font-size:12px;text-transform:uppercase;letter-spacing:.02em;color:var(--muted)}
+td{padding:9px 12px;border-top:1px solid var(--line);vertical-align:top}
+code,.kbd{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+code{background:#eef2f7;padding:1px 6px;border-radius:5px}
+.kbd{background:#fff;border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:6px;padding:1px 7px;font-size:12.5px}
+pre{background:#13233b;color:#e7eef7;padding:14px 16px;border-radius:12px;overflow:auto;font-size:13px;line-height:1.5}
+pre code{background:none;color:inherit;padding:0}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:4px 16px;margin:16px 0}
+summary{cursor:pointer;font-weight:600;padding:10px 0;font-family:-apple-system,system-ui,sans-serif;font-size:15px}
+.bars{margin:18px 0}
+.bar{display:grid;grid-template-columns:120px 1fr 54px;align-items:center;gap:10px;margin:7px 0;font-size:13.5px}
+.bar .t{color:var(--ink2)} .bar .track{background:#e9edf3;border-radius:6px;height:16px;overflow:hidden}
+.bar .track i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.bar .nv{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}
+.ba>div{border-radius:12px;padding:14px 16px;font-size:14.5px}
+.before{background:var(--badbg);border:1px solid #f1cdc9} .after{background:var(--okbg);border:1px solid #c7e9d5}
+.ba h4{margin:0 0 6px;font-family:-apple-system,system-ui,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+.before h4{color:var(--bad)} .after h4{color:var(--ok)}
+.ba ul{margin:0;padding-left:18px} .ba li{margin:4px 0}
+.cta{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;border-radius:16px;padding:26px;margin:30px 0;text-align:center}
+.cta h3{color:#fff;margin:0 0 8px;font-size:21px}
+.cta p{opacity:.9;margin:0 0 14px}
+.cta a{display:inline-block;background:#fff;color:var(--primary);text-decoration:none;font-weight:700;padding:11px 20px;border-radius:10px;font-family:-apple-system,system-ui,sans-serif}
+footer{max-width:860px;margin:0 auto;padding:24px;color:var(--muted);font-size:13px;font-family:-apple-system,system-ui,sans-serif;border-top:1px solid var(--line)}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.pill{font-family:-apple-system,system-ui,sans-serif;font-size:12px;background:#eef2f7;color:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.log{list-style:none;margin:18px 0;padding:0}
+.logit{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:12px 16px;margin:10px 0}
+.logit .d{font-family:"SF Mono",ui-monospace,monospace;font-size:12px;color:var(--accent);font-weight:600}
+.logit h4{margin:3px 0 4px;font-size:16px}
+.logit p{margin:3px 0;font-size:14.5px}
+@media(max-width:620px){ .toc ol{columns:1} .ba{grid-template-columns:1fr} .hero h1{font-size:27px} }
+</style>
+</head>
+<body>
+
+<div class="hero"><div class="in">
+  <span class="tag">Manual de uso</span>
+  <h1>Seguimiento de Acreditación de Atención Abierta</h1>
+  <p>Cómo configurar y usar la herramienta, cargar datos por CSV y trabajar con la planilla Excel. Pensado para que cualquiera del equipo lo haga sin ayuda.</p>
+  <div class="meta">CESFAM Tongoy · 90 características · Herramienta web + planilla</div>
+</div></div>
+<div class="wrap">
+
+<p class="lede">Acreditar no se pierde por falta de voluntad: se pierde por evidencia dispersa y avance que nadie ve. Esta herramienta pone las 90 características en una sola pantalla y deja el avance a la vista de todos.</p>
+
+<div class="min"><span class="lab">En 1 minuto</span>
+<p>Abre la herramienta → en <b>⚙️ Inventario de servicios</b> marca qué presta Tongoy (lo que no, se va a "No aplica") → filtra, cambia el <b>Estado</b> y el <b>% de avance</b> de cada característica → respalda con <b>Exportar JSON</b>. Eso es todo el ciclo.</p></div>
+
+<div class="toc"><h4>Contenido</h4><ol>
+  <li><a href="#abrir">Abrir la herramienta</a></li>
+  <li><a href="#manual">Configuración manual</a></li>
+  <li><a href="#csv">Configuración por carga CSV</a></li>
+  <li><a href="#xls">Uso del archivo Excel</a></li>
+  <li><a href="#guardar">Guardar y respaldar</a></li>
+  <li><a href="#faq">Problemas frecuentes</a></li>
+  <li><a href="#glos">Glosario</a></li>
+</ol></div>
+
+<h2 id="abrir"><span class="num">1</span>Abrir la herramienta</h2>
+<p>La herramienta es una página web. Se abre desde este enlace y funciona en cualquier navegador moderno, en computador o tablet:</p>
+<p><a href="https://claude.ai/artifact/C7rphhrrADn6ksq1US2GuE">https://claude.ai/artifact/C7rphhrrADn6ksq1US2GuE</a></p>
+<div class="callout why"><b>Por qué importa</b>No necesitas instalar nada ni crear cuentas. Todo el trabajo queda guardado en tu navegador y puedes respaldarlo en un archivo cuando quieras. Un solo enlace, cero fricción para empezar.</div>
+<p>Al abrirla verás tres zonas: el <mark>tablero</mark> arriba (los números de avance), los <mark>filtros</mark> al medio y la <mark>tabla</mark> con las 90 características abajo.</p>
+
+<h2 id="manual"><span class="num">2</span>Configuración manual</h2>
+<p>Es la forma más directa: trabajas dentro de la herramienta, sin archivos. Tres movimientos cubren el 90% del uso.</p>
+
+<h3>2.1 Definir el inventario de servicios</h3>
+<p>Antes de evaluar, dile a la herramienta qué presta realmente Tongoy. Lo que no presta no debe contar.</p>
+<ol class="steps">
+  <li class="step"><h3>Abre el inventario</h3><p>Pulsa <span class="kbd">⚙️ Inventario de servicios</span> en la barra superior.</p></li>
+  <li class="step"><h3>Marca cada servicio</h3><p>Cada ámbito tiene un interruptor <b>Presta / No presta</b>. Apaga los que Tongoy no realiza ni compra.</p></li>
+  <li class="step"><h3>Usa la sugerencia</h3><p>El botón <span class="kbd">Aplicar sugerencia APS típica</span> apaga de una vez los servicios que rara vez están en un CESFAM (radioterapia, diálisis, quimioterapia, medicina transfusional, donantes, anatomía patológica). Es un punto de partida: ajústalo a tu realidad.</p></li>
+</ol>
+<div class="callout key"><b>Regla de oro</b>Todo servicio en <b>No presta</b> pasa sus características a <b>"No aplica"</b> y se excluye del cálculo. Así el porcentaje de cumplimiento refleja solo lo que de verdad te evalúan.</div>
+
+<h3>2.2 Cambiar el estado y el avance</h3>
+<p>En la tabla, cada fila tiene un menú <b>Estado</b> y un campo <b>% Av.</b> que editas directo:</p>
+<table><tr><th>Estado</th><th>Qué significa</th></tr>
+<tr><td><b>Pendiente</b></td><td>Aún no se levanta evidencia.</td></tr>
+<tr><td><b>En proceso</b></td><td>Se está reuniendo o preparando la evidencia.</td></tr>
+<tr><td><b>Cumple</b></td><td>La proporción de elementos medibles cumplidos alcanza o supera el umbral.</td></tr>
+<tr><td><b>No cumple</b></td><td>Queda bajo el umbral, o falta evidencia verificable.</td></tr>
+<tr><td><b>No aplica</b></td><td>El prestador no tiene el servicio o no realiza la prestación.</td></tr></table>
+<div class="callout tip"><b>Se guarda solo</b>No hay botón "Guardar". Cada cambio queda registrado al instante en tu navegador; arriba a la derecha verás la hora del último guardado.</div>
+
+<h3>2.3 Registrar el detalle de una característica</h3>
+<p>Haz clic en cualquier fila (sobre el texto, no sobre el menú) y se abre un panel lateral para registrar lo importante:</p>
+<div class="cards">
+  <div class="card"><div class="ic">📎</div><h3>Evidencia</h3><p>Qué documento o registro respalda el cumplimiento.</p></div>
+  <div class="card"><div class="ic">👤</div><h3>Responsable</h3><p>Quién levanta esa evidencia.</p></div>
+  <div class="card"><div class="ic">📅</div><h3>Fecha de revisión</h3><p>Cuándo se revisó por última vez.</p></div>
+  <div class="card"><div class="ic">⛳</div><h3>Brecha y acción</h3><p>Qué falta y qué se hará para cerrarlo.</p></div>
+</div>
+
+<h3>2.4 Filtrar y leer el tablero</h3>
+<p>Filtra por <b>ámbito</b>, <b>estado</b>, <b>prioridad</b> o busca por código o texto. El tablero recalcula en vivo: aplicables, cumplen, no cumplen, en proceso, pendientes, no aplica y el <b>% de cumplimiento</b> sobre lo aplicable, más una barra de avance por ámbito.</p>
+<div class="callout why"><b>Por qué importa</b>Filtrar por <b>Prioridad Alta</b> te muestra las 20 características de mayor impacto en seguridad del paciente. Si el tiempo es poco, ese es el frente por donde partir.</div>
+
+<h2 id="csv"><span class="num">3</span>Configuración por carga CSV</h2>
+<p>Útil cuando varias personas llenan datos fuera de línea, o cuando prefieres el orden de una planilla. El ciclo es: <b>exportar → editar → importar</b>.</p>
+<ol class="steps">
+  <li class="step"><h3>Obtén el CSV base</h3><p>Usa <span class="kbd">⬇️ Exportar CSV</span> en la herramienta, o parte del archivo <code>acreditacion_tongoy_seguimiento.csv</code> que ya tienes.</p></li>
+  <li class="step"><h3>Edítalo</h3><p>Ábrelo en Excel, LibreOffice o Google Sheets. Completa las columnas de seguimiento (estado, avance, evidencia, responsable, etc.). <b>No cambies la columna <code>codigo</code></b>: es la llave que identifica cada característica.</p></li>
+  <li class="step"><h3>Guárdalo como CSV</h3><p>Al guardar, mantén el formato <b>CSV (delimitado por comas, UTF-8)</b>.</p></li>
+  <li class="step"><h3>Impórtalo</h3><p>En la herramienta, pulsa <span class="kbd">⬆️ Importar JSON/CSV</span> y elige tu archivo. La herramienta reconoce el CSV, cruza por <code>codigo</code> y actualiza el avance.</p></li>
+</ol>
+<div class="callout warn"><b>Dos reglas que evitan errores</b>1) La columna <code>codigo</code> debe conservarse intacta. 2) La columna <code>estado</code> solo acepta: <code>Pendiente</code>, <code>En proceso</code>, <code>Cumple</code>, <code>No cumple</code>, <code>No aplica</code>. Un valor distinto se ignora y se conserva el estado previo.</div>
+
+<h3>El esquema de campos (vale para CSV y JSON)</h3>
+<table><tr><th>Campo</th><th>Tipo</th><th>Valores / regla</th></tr>
+<tr><td><code>codigo</code></td><td>texto</td><td>Llave única (p. ej. <code>GCL-1.9</code>). No editar.</td></tr>
+<tr><td><code>estado</code></td><td>texto</td><td>Pendiente | En proceso | Cumple | No cumple | No aplica</td></tr>
+<tr><td><code>avance_pct</code></td><td>entero</td><td>0 a 100 (o vacío)</td></tr>
+<tr><td><code>evidencia</code></td><td>texto</td><td>Libre</td></tr>
+<tr><td><code>responsable</code></td><td>texto</td><td>Libre</td></tr>
+<tr><td><code>fecha_revision</code></td><td>fecha</td><td>AAAA-MM-DD</td></tr>
+<tr><td><code>brecha</code> / <code>accion</code> / <code>observaciones</code></td><td>texto</td><td>Libre</td></tr>
+</table>
+<div class="callout tip"><b>Compatibilidad total</b>El CSV, el JSON y la planilla Excel usan exactamente los mismos nombres de campo. Lo que exportas de un lado entra sin traducción en el otro.</div>
+
+<h2 id="xls"><span class="num">4</span>Uso del archivo Excel</h2>
+<p>El archivo <code>acreditacion_tongoy_planilla.xlsx</code> es la versión de planilla, útil para quien prefiere trabajar en Excel o para imprimir y repartir. Tiene tres hojas:</p>
+<div class="cards">
+  <div class="card"><div class="ic">📋</div><h3>Seguimiento</h3><p>Las 90 características con menús desplegables en Estado y validación 0–100 en % Avance.</p></div>
+  <div class="card"><div class="ic">📊</div><h3>Resumen</h3><p>Conteos automáticos por estado (COUNTIF), prioridad alta y umbral 100%.</p></div>
+  <div class="card"><div class="ic">📖</div><h3>Formato</h3><p>El diccionario de campos, para no perder el esquema.</p></div>
+</div>
+<div class="callout why"><b>Por qué importa</b>La planilla y la herramienta no compiten: son la misma información en dos superficies. Llena en Excel si te acomoda, guarda como CSV e impórtalo a la herramienta para tener el tablero visual. El puente es el CSV.</div>
+
+<h2 id="guardar"><span class="num">5</span>Guardar y respaldar</h2>
+<p>La herramienta guarda tu avance en el <b>navegador</b> (almacenamiento local). Eso tiene una consecuencia que conviene entender:</p>
+<div class="callout warn"><b>El respaldo es tu responsabilidad</b>El avance vive en <em>ese</em> navegador y <em>ese</em> equipo. Si cambias de computador, limpias el navegador o quieres compartir el estado, usa <span class="kbd">⬇️ Exportar JSON</span> para guardar un archivo, y <span class="kbd">⬆️ Importar JSON/CSV</span> para recuperarlo. Haz un export al terminar cada jornada de trabajo.</div>
+<p>El <b>Exportar JSON</b> incluye también el inventario de servicios, así que al reimportarlo recuperas exactamente dónde estabas.</p>
+
+<h2 id="faq"><span class="num">6</span>Problemas frecuentes</h2>
+<details><summary>Cambié de computador y no veo mi avance</summary><p>El avance no viaja solo. Exporta el JSON en el equipo donde trabajaste e impórtalo en el nuevo. Para trabajo compartido, acuerden un único archivo JSON “oficial”.</p></details>
+<details><summary>Importé un CSV y no cambió nada</summary><p>Revisa que el archivo conserve la columna <code>codigo</code> con los códigos originales y que esté guardado como CSV UTF-8. Si los códigos no calzan, no hay a qué fila aplicar los datos.</p></details>
+<details><summary>Una característica aparece tachada y gris</summary><p>Su servicio está en <b>No presta</b> en el inventario. Si Tongoy sí lo realiza, enciéndelo en ⚙️ Inventario de servicios y volverá a ser evaluable.</p></details>
+<details><summary>El botón Exportar no descarga</summary><p>Ábrelo dentro de claude.ai y confirma la descarga cuando la plataforma te lo pida. En algunos navegadores el guardado pide una confirmación adicional.</p></details>
+<details><summary>Quiero empezar de cero</summary><p>Usa <span class="kbd">↺ Restablecer</span>. Borra el avance de ese navegador y vuelve todo a Pendiente. Exporta antes si quieres conservar lo hecho.</p></details>
+
+<h2 id="glos"><span class="num">7</span>Glosario</h2>
+<table>
+<tr><th>Término</th><th>Significado</th></tr>
+<tr><td>Característica</td><td>Requisito evaluable de la pauta (hay 90). Cumple o no según su umbral.</td></tr>
+<tr><td>Elemento medible</td><td>Cada requisito concreto dentro de una característica; se evalúa cumple/no cumple.</td></tr>
+<tr><td>Umbral</td><td>Proporción mínima de elementos medibles cumplidos para dar por cumplida la característica.</td></tr>
+<tr><td>Punto de verificación</td><td>Lugar o unidad donde se revisa la evidencia.</td></tr>
+<tr><td>No aplica</td><td>La característica no corresponde porque el prestador no tiene el servicio o no realiza la prestación.</td></tr>
+</table>
+
+<div class="cta"><h3>Todo listo para empezar</h3><p>Abre la herramienta, define tu inventario y registra tu primera característica.</p><a href="https://claude.ai/artifact/C7rphhrrADn6ksq1US2GuE">Abrir la herramienta →</a></div>
+
+</div>
+
+<footer>Documento preparado para el equipo de acreditación de CESFAM Tongoy · Noviembre 2026 · Herramienta de seguimiento de acreditación de atención abierta.</footer>
+</body>
+</html>

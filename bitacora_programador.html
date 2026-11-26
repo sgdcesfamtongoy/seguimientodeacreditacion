@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bitácora de programador · Herramienta de Acreditación</title>
+<style>
+:root{
+  --bg:#f5f7fa; --panel:#fff; --ink:#15233b; --ink2:#38485f; --muted:#64748b; --line:#e4e9f1;
+  --primary:#1f3a5f; --primary2:#2b5a8c; --accent:#0f7a6a; --accent2:#13a088;
+  --ok:#1b8a5a; --okbg:#e6f5ec; --warn:#b9770a; --warnbg:#fdf3e0; --bad:#c0392b; --badbg:#fbeceb;
+  --hl:#fff3bf; --ring:rgba(31,58,95,.12);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.65 "Iowan Old Style","Palatino Linotype",Georgia,serif;-webkit-font-smoothing:antialiased}
+.sans,nav,.chip,.kbd,.tag,.stat .k,.step .n,.toc,.card h3,.callout b,table{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.hero{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;padding:54px 24px 46px}
+.hero .in{max-width:860px;margin:0 auto}
+.hero .tag{display:inline-block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.82;
+  border:1px solid rgba(255,255,255,.4);padding:4px 10px;border-radius:999px;margin-bottom:16px}
+.hero h1{font-size:34px;line-height:1.18;margin:0 0 12px;font-weight:700}
+.hero p{font-size:17px;opacity:.92;margin:0;max-width:640px}
+.hero .meta{margin-top:20px;font-size:13px;opacity:.78;font-family:-apple-system,system-ui,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:10px 24px 80px}
+.lede{font-size:18px;color:var(--ink2);border-left:3px solid var(--accent);padding:6px 0 6px 18px;margin:26px 0}
+h2{font-size:25px;margin:46px 0 8px;letter-spacing:-.01em;scroll-margin-top:16px}
+h2 .num{color:var(--accent);font-weight:700;margin-right:10px}
+h3{font-size:19px;margin:26px 0 6px}
+p{margin:12px 0}
+a{color:var(--primary2)}
+.rule{height:1px;background:var(--line);border:0;margin:40px 0}
+mark{background:var(--hl);padding:0 3px;border-radius:3px}
+.toc{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin:28px 0;font-size:14.5px}
+.toc h4{margin:0 0 8px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.toc ol{margin:0;padding-left:20px;columns:2;column-gap:28px}
+.toc li{margin:4px 0;break-inside:avoid}
+.toc a{text-decoration:none;color:var(--ink2)} .toc a:hover{color:var(--primary2)}
+.min{background:#eef5f3;border:1px solid #d3e6e1;border-radius:14px;padding:16px 20px;margin:22px 0}
+.min .lab{font-family:-apple-system,system-ui,sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.min p{margin:6px 0 0;font-size:15.5px}
+.callout{border-radius:12px;padding:14px 16px 14px 48px;margin:18px 0;position:relative;font-size:15px;line-height:1.55;
+  background:var(--panel);border:1px solid var(--line)}
+.callout:before{position:absolute;left:14px;top:13px;font-size:20px}
+.callout b{font-family:-apple-system,system-ui,sans-serif;display:block;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:3px}
+.why{background:#f0f6ff;border-color:#d4e4fb} .why:before{content:"💡"} .why b{color:var(--primary2)}
+.tip{background:var(--okbg);border-color:#c7e9d5} .tip:before{content:"✅"} .tip b{color:var(--ok)}
+.warn{background:var(--warnbg);border-color:#f3dca9} .warn:before{content:"⚠️"} .warn b{color:var(--warn)}
+.key{background:#f6f2ff;border-color:#e0d7fb} .key:before{content:"🔑"} .key b{color:#6b4fc9}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:20px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 1px 2px var(--ring)}
+.card .ic{font-size:24px}
+.card h3{margin:8px 0 4px;font-size:16px}
+.card p{margin:0;font-size:14px;color:var(--ink2)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:22px 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center}
+.stat .v{font-size:30px;font-weight:800;color:var(--primary);font-family:-apple-system,system-ui,sans-serif;line-height:1}
+.stat .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin-top:6px}
+.stat.accent .v{color:var(--accent)} .stat.bad .v{color:var(--bad)}
+.steps{counter-reset:s;margin:20px 0;padding:0;list-style:none}
+.step{position:relative;padding:4px 0 18px 54px;margin:0}
+.step:not(:last-child):after{content:"";position:absolute;left:18px;top:34px;bottom:-4px;width:2px;background:var(--line)}
+.step .n{counter-increment:s;position:absolute;left:0;top:0;width:36px;height:36px;border-radius:50%;
+  background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+.step .n:before{content:counter(s)}
+.step h3{margin:4px 0 4px;font-size:17px}
+.step p{margin:4px 0;font-size:15px}
+table{border-collapse:collapse;width:100%;margin:18px 0;font-size:14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{background:#eef2f7;text-align:left;padding:9px 12px;font-size:12px;text-transform:uppercase;letter-spacing:.02em;color:var(--muted)}
+td{padding:9px 12px;border-top:1px solid var(--line);vertical-align:top}
+code,.kbd{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+code{background:#eef2f7;padding:1px 6px;border-radius:5px}
+.kbd{background:#fff;border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:6px;padding:1px 7px;font-size:12.5px}
+pre{background:#13233b;color:#e7eef7;padding:14px 16px;border-radius:12px;overflow:auto;font-size:13px;line-height:1.5}
+pre code{background:none;color:inherit;padding:0}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:4px 16px;margin:16px 0}
+summary{cursor:pointer;font-weight:600;padding:10px 0;font-family:-apple-system,system-ui,sans-serif;font-size:15px}
+.bars{margin:18px 0}
+.bar{display:grid;grid-template-columns:120px 1fr 54px;align-items:center;gap:10px;margin:7px 0;font-size:13.5px}
+.bar .t{color:var(--ink2)} .bar .track{background:#e9edf3;border-radius:6px;height:16px;overflow:hidden}
+.bar .track i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.bar .nv{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}
+.ba>div{border-radius:12px;padding:14px 16px;font-size:14.5px}
+.before{background:var(--badbg);border:1px solid #f1cdc9} .after{background:var(--okbg);border:1px solid #c7e9d5}
+.ba h4{margin:0 0 6px;font-family:-apple-system,system-ui,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+.before h4{color:var(--bad)} .after h4{color:var(--ok)}
+.ba ul{margin:0;padding-left:18px} .ba li{margin:4px 0}
+.cta{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;border-radius:16px;padding:26px;margin:30px 0;text-align:center}
+.cta h3{color:#fff;margin:0 0 8px;font-size:21px}
+.cta p{opacity:.9;margin:0 0 14px}
+.cta a{display:inline-block;background:#fff;color:var(--primary);text-decoration:none;font-weight:700;padding:11px 20px;border-radius:10px;font-family:-apple-system,system-ui,sans-serif}
+footer{max-width:860px;margin:0 auto;padding:24px;color:var(--muted);font-size:13px;font-family:-apple-system,system-ui,sans-serif;border-top:1px solid var(--line)}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.pill{font-family:-apple-system,system-ui,sans-serif;font-size:12px;background:#eef2f7;color:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.log{list-style:none;margin:18px 0;padding:0}
+.logit{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:12px 16px;margin:10px 0}
+.logit .d{font-family:"SF Mono",ui-monospace,monospace;font-size:12px;color:var(--accent);font-weight:600}
+.logit h4{margin:3px 0 4px;font-size:16px}
+.logit p{margin:3px 0;font-size:14.5px}
+@media(max-width:620px){ .toc ol{columns:1} .ba{grid-template-columns:1fr} .hero h1{font-size:27px} }
+</style>
+</head>
+<body>
+
+<div class="hero"><div class="in">
+  <span class="tag">Bitácora de programador</span>
+  <h1>Herramienta de seguimiento de acreditación</h1>
+  <p>Registro técnico: arquitectura, decisiones de diseño, modelo de datos y cambios versión a versión.</p>
+  <div class="meta">Stack: HTML + CSS + JavaScript (sin dependencias) · Artefacto claude.ai · 26 nov 2026</div>
+</div></div>
+<div class="wrap">
+
+<div class="min"><span class="lab">Resumen técnico</span>
+<p>Página única autocontenida (un <code>index.html</code>, ~61 KB) con los 90 registros embebidos. Sin framework ni build. Persistencia en <code>localStorage</code>; exportación mediante la capacidad <code>downloads</code> del artefacto; importación JSON/CSV en el cliente.</p></div>
+
+<div class="tag-row">
+  <span class="pill">Vanilla JS</span><span class="pill">Sin dependencias</span><span class="pill">Self-contained</span>
+  <span class="pill">localStorage</span><span class="pill">Capability: downloads</span><span class="pill">Contract 0.2.99</span>
+</div>
+
+<h2>Objetivo</h2>
+<p>Dar al equipo de CESFAM Tongoy un seguimiento operativo de las 90 características del Estándar de Atención Abierta, que cargue sin instalación, se edite en vivo y sea 100% portable vía archivos (JSON/CSV/XLSX).</p>
+
+<h2>Arquitectura</h2>
+<h3>Modelo de datos</h3>
+<p>Fuente de verdad embebida en <code>const SEED = { meta, caracteristicas[] }</code>. Cada característica:</p>
+<pre><code>{ id, ambito, ambito_nombre, componente, codigo,
+  caracteristica, umbral_pct, umbral_texto, prioridad,
+  estado, avance_pct, evidencia, responsable,
+  fecha_revision, brecha, accion, observaciones }</code></pre>
+
+<h3>Estado de la aplicación</h3>
+<p>Un objeto <code>state = { inventario, caracteristicas[], updated }</code>. El <code>inventario</code> mapea cada ámbito a <code>true/false</code> (presta / no presta).</p>
+<div class="callout key"><b>Decisión central: override por inventario</b>En lugar de duplicar el "No aplica" en cada fila, <code>estadoEfectivo(c)</code> deriva el estado: si el servicio del ámbito está en <code>false</code>, devuelve "No aplica"; si no, el estado guardado. Al apagar un servicio se guarda <code>_prev</code> para restaurar el estado real al reactivarlo. Una sola fuente, sin estados contradictorios.</div>
+
+<h3>Cálculo de métricas</h3>
+<p><code>metrics()</code> aplica <code>estadoEfectivo</code> a todas las características, separa las aplicables (≠ "No aplica") y calcula el % de cumplimiento = <code>Cumple / aplicables</code>. El denominador excluye los "No aplica", en línea con el criterio acordado en el proyecto.</p>
+
+<h3>Persistencia</h3>
+<p><code>localStorage</code> con <em>debounce</em> de 150 ms y <code>try/catch</code>: si el almacenamiento no está disponible, la UI avisa "usa Exportar" en lugar de fallar en silencio.</p>
+
+<h3>Importar / Exportar</h3>
+<p>Export JSON reconstruye <code>{meta (+inventario), caracteristicas}</code>; export CSV respeta el esquema con escape de comillas y BOM UTF-8. Import detecta JSON vs CSV por extensión y por el primer carácter; el CSV se parsea con una máquina de estados que maneja comillas y saltos de línea, y se cruza por <code>codigo</code> contra el SEED base (no se confía en el orden del archivo).</p>
+
+<h2>Decisiones y razones</h2>
+<table>
+<tr><th>Decisión</th><th>Por qué</th></tr>
+<tr><td>Sin framework</td><td>Un archivo, cero build, máxima longevidad. 90 filas no justifican React.</td></tr>
+<tr><td>Datos embebidos</td><td>La herramienta funciona aunque no haya red ni archivo externo que cargar.</td></tr>
+<tr><td>localStorage + export</td><td>Cero backend; el usuario controla su respaldo. El JSON es el mecanismo de portabilidad y de trabajo compartido.</td></tr>
+<tr><td>Capacidad <code>downloads</code></td><td>El visor de artefactos bloquea las descargas por enlace directo; <code>claude.use("downloads")</code> es la vía soportada, con respaldo a Blob.</td></tr>
+<tr><td>Cruce por <code>codigo</code></td><td>Hace el import idempotente y robusto a reordenamientos o filas faltantes.</td></tr>
+</table>
+
+<h2>Registro de cambios</h2>
+<ul class="log">
+  <li class="logit"><span class="d">2026-11-26 · v1</span><h4>Publicación inicial</h4><p>Tablero, filtros, edición inline, panel de detalle, inventario de servicios y persistencia en localStorage. 90 características embebidas.</p></li>
+  <li class="logit"><span class="d">2026-11-26 · v2</span><h4>Capacidad downloads</h4><p>Se detectó que el visor no permite descargas por Blob. Se declaró la capacidad <code>downloads</code> y se reescribió el export a <code>claude.use("downloads").save()</code> con respaldo a Blob para contextos fuera del visor.</p></li>
+  <li class="logit"><span class="d">2026-11-26 · v3</span><h4>Importación CSV</h4><p>El import pasó de solo-JSON a JSON/CSV: parser de CSV propio y mapeo por campos del esquema. Habilita el flujo Excel → CSV → herramienta.</p></li>
+</ul>
+
+<h2>Limitaciones conocidas y pendientes</h2>
+<div class="callout warn"><b>En la lista</b>
+  <span style="font-weight:400;display:block;margin-top:4px">
+  • Seguimiento a nivel de característica, no de elemento medible (se puede anidar en una versión futura).<br>
+  • Persistencia por navegador; la sincronización entre equipos es manual vía JSON (una versión con la capacidad <code>db</code> permitiría estado compartido).<br>
+  • Falta el anexo de tamaños de muestra de la pauta para apoyar el cálculo de evaluaciones periódicas.</span>
+</div>
+
+<h2>Cómo extenderla</h2>
+<details><summary>Agregar o cambiar características</summary><p>Editar el arreglo <code>DATA</code> del generador (<code>gen_planilla.py</code>) y regenerar JSON/CSV/XLSX; luego reconstruir <code>index.html</code> con <code>build_app.py</code> (que embebe el JSON) y republicar el artefacto.</p></details>
+<details><summary>Agregar un campo nuevo</summary><p>Añadirlo al esquema en <code>gen_planilla.py</code> (<code>FIELDS</code>), al render de la tabla/detalle en <code>build_app.py</code> y, si debe exportarse en CSV, ya queda cubierto porque el CSV usa <code>meta.campos</code>.</p></details>
+<details><summary>Estado compartido entre viewers</summary><p>Declarar la capacidad <code>db</code> y mover <code>state.caracteristicas</code> a filas en la base del artefacto; el patrón actual de import/export sirve de migración.</p></details>
+
+<h2>Notas de diseño editorial</h2>
+<p>La documentación de este proyecto aplica, de forma deliberada, principios de ciencia cognitiva del aprendizaje para mejorar comprensión y retención —no como adorno, sino como estructura:</p>
+<table>
+<tr><th>Principio</th><th>Dónde se usa</th></tr>
+<tr><td>Carga cognitiva / <em>chunking</em></td><td>Párrafos cortos, pasos numerados, una idea por bloque.</td></tr>
+<tr><td>Codificación dual</td><td>Íconos junto al texto y datos como barras, no solo prosa.</td></tr>
+<tr><td>Efecto de aislamiento (von Restorff)</td><td>Resaltados y "cajas clave" para lo que no debe perderse.</td></tr>
+<tr><td>Primacía</td><td>Resúmenes "En 1 minuto" al inicio de cada documento.</td></tr>
+<tr><td>Relevancia / emoción</td><td>Cajas "Por qué importa" que conectan cada paso con su consecuencia.</td></tr>
+<tr><td>Divulgación progresiva</td><td>Detalles avanzados plegados en acordeones.</td></tr>
+</table>
+
+</div>
+
+<footer>Documento preparado para el equipo de acreditación de CESFAM Tongoy · Noviembre 2026 · Herramienta de seguimiento de acreditación de atención abierta.</footer>
+</body>
+</html>

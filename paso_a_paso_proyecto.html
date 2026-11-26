@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paso a paso del proyecto · Acreditación CESFAM Tongoy</title>
+<style>
+:root{
+  --bg:#f5f7fa; --panel:#fff; --ink:#15233b; --ink2:#38485f; --muted:#64748b; --line:#e4e9f1;
+  --primary:#1f3a5f; --primary2:#2b5a8c; --accent:#0f7a6a; --accent2:#13a088;
+  --ok:#1b8a5a; --okbg:#e6f5ec; --warn:#b9770a; --warnbg:#fdf3e0; --bad:#c0392b; --badbg:#fbeceb;
+  --hl:#fff3bf; --ring:rgba(31,58,95,.12);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.65 "Iowan Old Style","Palatino Linotype",Georgia,serif;-webkit-font-smoothing:antialiased}
+.sans,nav,.chip,.kbd,.tag,.stat .k,.step .n,.toc,.card h3,.callout b,table{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.hero{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;padding:54px 24px 46px}
+.hero .in{max-width:860px;margin:0 auto}
+.hero .tag{display:inline-block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.82;
+  border:1px solid rgba(255,255,255,.4);padding:4px 10px;border-radius:999px;margin-bottom:16px}
+.hero h1{font-size:34px;line-height:1.18;margin:0 0 12px;font-weight:700}
+.hero p{font-size:17px;opacity:.92;margin:0;max-width:640px}
+.hero .meta{margin-top:20px;font-size:13px;opacity:.78;font-family:-apple-system,system-ui,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:10px 24px 80px}
+.lede{font-size:18px;color:var(--ink2);border-left:3px solid var(--accent);padding:6px 0 6px 18px;margin:26px 0}
+h2{font-size:25px;margin:46px 0 8px;letter-spacing:-.01em;scroll-margin-top:16px}
+h2 .num{color:var(--accent);font-weight:700;margin-right:10px}
+h3{font-size:19px;margin:26px 0 6px}
+p{margin:12px 0}
+a{color:var(--primary2)}
+.rule{height:1px;background:var(--line);border:0;margin:40px 0}
+mark{background:var(--hl);padding:0 3px;border-radius:3px}
+.toc{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin:28px 0;font-size:14.5px}
+.toc h4{margin:0 0 8px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.toc ol{margin:0;padding-left:20px;columns:2;column-gap:28px}
+.toc li{margin:4px 0;break-inside:avoid}
+.toc a{text-decoration:none;color:var(--ink2)} .toc a:hover{color:var(--primary2)}
+.min{background:#eef5f3;border:1px solid #d3e6e1;border-radius:14px;padding:16px 20px;margin:22px 0}
+.min .lab{font-family:-apple-system,system-ui,sans-serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.min p{margin:6px 0 0;font-size:15.5px}
+.callout{border-radius:12px;padding:14px 16px 14px 48px;margin:18px 0;position:relative;font-size:15px;line-height:1.55;
+  background:var(--panel);border:1px solid var(--line)}
+.callout:before{position:absolute;left:14px;top:13px;font-size:20px}
+.callout b{font-family:-apple-system,system-ui,sans-serif;display:block;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:3px}
+.why{background:#f0f6ff;border-color:#d4e4fb} .why:before{content:"💡"} .why b{color:var(--primary2)}
+.tip{background:var(--okbg);border-color:#c7e9d5} .tip:before{content:"✅"} .tip b{color:var(--ok)}
+.warn{background:var(--warnbg);border-color:#f3dca9} .warn:before{content:"⚠️"} .warn b{color:var(--warn)}
+.key{background:#f6f2ff;border-color:#e0d7fb} .key:before{content:"🔑"} .key b{color:#6b4fc9}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:20px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 1px 2px var(--ring)}
+.card .ic{font-size:24px}
+.card h3{margin:8px 0 4px;font-size:16px}
+.card p{margin:0;font-size:14px;color:var(--ink2)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:22px 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center}
+.stat .v{font-size:30px;font-weight:800;color:var(--primary);font-family:-apple-system,system-ui,sans-serif;line-height:1}
+.stat .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin-top:6px}
+.stat.accent .v{color:var(--accent)} .stat.bad .v{color:var(--bad)}
+.steps{counter-reset:s;margin:20px 0;padding:0;list-style:none}
+.step{position:relative;padding:4px 0 18px 54px;margin:0}
+.step:not(:last-child):after{content:"";position:absolute;left:18px;top:34px;bottom:-4px;width:2px;background:var(--line)}
+.step .n{counter-increment:s;position:absolute;left:0;top:0;width:36px;height:36px;border-radius:50%;
+  background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+.step .n:before{content:counter(s)}
+.step h3{margin:4px 0 4px;font-size:17px}
+.step p{margin:4px 0;font-size:15px}
+table{border-collapse:collapse;width:100%;margin:18px 0;font-size:14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{background:#eef2f7;text-align:left;padding:9px 12px;font-size:12px;text-transform:uppercase;letter-spacing:.02em;color:var(--muted)}
+td{padding:9px 12px;border-top:1px solid var(--line);vertical-align:top}
+code,.kbd{font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+code{background:#eef2f7;padding:1px 6px;border-radius:5px}
+.kbd{background:#fff;border:1px solid #cbd5e1;border-bottom-width:2px;border-radius:6px;padding:1px 7px;font-size:12.5px}
+pre{background:#13233b;color:#e7eef7;padding:14px 16px;border-radius:12px;overflow:auto;font-size:13px;line-height:1.5}
+pre code{background:none;color:inherit;padding:0}
+details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:4px 16px;margin:16px 0}
+summary{cursor:pointer;font-weight:600;padding:10px 0;font-family:-apple-system,system-ui,sans-serif;font-size:15px}
+.bars{margin:18px 0}
+.bar{display:grid;grid-template-columns:120px 1fr 54px;align-items:center;gap:10px;margin:7px 0;font-size:13.5px}
+.bar .t{color:var(--ink2)} .bar .track{background:#e9edf3;border-radius:6px;height:16px;overflow:hidden}
+.bar .track i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.bar .nv{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}
+.ba>div{border-radius:12px;padding:14px 16px;font-size:14.5px}
+.before{background:var(--badbg);border:1px solid #f1cdc9} .after{background:var(--okbg);border:1px solid #c7e9d5}
+.ba h4{margin:0 0 6px;font-family:-apple-system,system-ui,sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+.before h4{color:var(--bad)} .after h4{color:var(--ok)}
+.ba ul{margin:0;padding-left:18px} .ba li{margin:4px 0}
+.cta{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;border-radius:16px;padding:26px;margin:30px 0;text-align:center}
+.cta h3{color:#fff;margin:0 0 8px;font-size:21px}
+.cta p{opacity:.9;margin:0 0 14px}
+.cta a{display:inline-block;background:#fff;color:var(--primary);text-decoration:none;font-weight:700;padding:11px 20px;border-radius:10px;font-family:-apple-system,system-ui,sans-serif}
+footer{max-width:860px;margin:0 auto;padding:24px;color:var(--muted);font-size:13px;font-family:-apple-system,system-ui,sans-serif;border-top:1px solid var(--line)}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.pill{font-family:-apple-system,system-ui,sans-serif;font-size:12px;background:#eef2f7;color:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.log{list-style:none;margin:18px 0;padding:0}
+.logit{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:12px 16px;margin:10px 0}
+.logit .d{font-family:"SF Mono",ui-monospace,monospace;font-size:12px;color:var(--accent);font-weight:600}
+.logit h4{margin:3px 0 4px;font-size:16px}
+.logit p{margin:3px 0;font-size:14.5px}
+@media(max-width:620px){ .toc ol{columns:1} .ba{grid-template-columns:1fr} .hero h1{font-size:27px} }
+</style>
+</head>
+<body>
+
+<div class="hero"><div class="in">
+  <span class="tag">Paso a paso del proyecto</span>
+  <h1>De la pauta en PDF a una herramienta viva</h1>
+  <p>El recorrido completo de lo que hicimos, en orden, con el porqué de cada decisión. Para documentar el proceso y poder replicarlo.</p>
+  <div class="meta">CESFAM Tongoy · 26 de noviembre de 2026</div>
+</div></div>
+<div class="wrap">
+
+<p class="lede">Un buen resultado se entiende mejor cuando se ve cómo se construyó. Esta es la historia del proyecto en seis fases, cada una apoyándose en la anterior.</p>
+
+<div class="min"><span class="lab">En 1 minuto</span>
+<p>Entendimos la pauta → fijamos criterios de interpretación → convertimos las 90 características en datos → construimos una herramienta para seguirlas → la hicimos portable (Excel/CSV/JSON) → documentamos todo. Cada paso dejó un entregable concreto.</p></div>
+
+<ol class="steps">
+  <li class="step"><h3>Fase 0 — El encargo</h3>
+    <p>Partimos de la <b>Pauta de Cotejo del Estándar General de Acreditación para Atención Abierta</b> y el objetivo de llevarla a la práctica en CESFAM Tongoy. No queríamos un resumen: queríamos una base operativa.</p>
+    <p><b>Resultado:</b> alcance claro — comprender, ordenar y hacer seguible la pauta.</p></li>
+
+  <li class="step"><h3>Fase 1 — Comprender la pauta</h3>
+    <p>Mapeamos la estructura completa: <b>ámbito → componente → característica → elementos medibles</b>, con sus umbrales exactos y la lógica de cumplimiento (dicotómico por elemento; proporción ≥ umbral por característica).</p>
+    <div class="callout why"><b>Por qué primero esto</b>Sin entender que casi la mitad de las características exigen 100%, cualquier herramienta de seguimiento trataría todo como igual. La lógica de puntuación define qué hay que destacar.</div>
+    <p><b>Resultado:</b> guía de aplicación + mapa estructural con los 20 ámbitos y 90 características. <a href="https://claude.ai/artifact/UTNbYfGdmEcBdobGbDVFNz">Ver la guía →</a></p></li>
+
+  <li class="step"><h3>Fase 2 — Fijar criterios de interpretación</h3>
+    <p>La pauta deja zonas abiertas. Las explicitamos antes de medir: cómo cuenta el denominador con "No aplica", el anexo de muestreo faltante, y que las columnas de verificación dependen de los servicios reales de Tongoy.</p>
+    <p><b>Resultado:</b> tres criterios acordados, registrados en el proyecto para no re-discutirlos cada vez.</p></li>
+
+  <li class="step"><h3>Fase 3 — Convertir la pauta en datos</h3>
+    <p>Transformamos las 90 características en un <b>dataset con esquema estable</b> (código, ámbito, umbral, prioridad, y columnas de seguimiento). Lo generamos en tres formatos con los mismos campos: planilla Excel, CSV y JSON.</p>
+    <div class="callout key"><b>Decisión clave</b>Un solo esquema para los tres formatos. Eso es lo que después permite mover datos entre Excel, CSV y la herramienta sin fricción ni pérdida.</div>
+    <p><b>Resultado:</b> planilla <code>.xlsx</code> con validaciones, <code>.csv</code> y <code>.json</code> de carga.</p></li>
+
+  <li class="step"><h3>Fase 4 — Construir la herramienta</h3>
+    <p>Una página web autocontenida: tablero en vivo, filtros, edición de estado y avance, detalle por característica, <b>inventario de servicios</b> que marca los "No aplica", y guardado automático. Luego la hicimos exportar e importar.</p>
+    <p><b>Resultado:</b> herramienta publicada y lista. <a href="https://claude.ai/artifact/C7rphhrrADn6ksq1US2GuE">Abrirla →</a></p></li>
+
+  <li class="step"><h3>Fase 5 — Documentar</h3>
+    <p>Para que el trabajo no dependa de quien lo hizo: manual de uso, presentación, bitácora técnica y este paso a paso. Redactados con principios de aprendizaje para que se lean y se recuerden.</p>
+    <p><b>Resultado:</b> el set de documentos que estás leyendo.</p></li>
+</ol>
+
+<hr class="rule">
+
+<h2>Lo que quedó instalado</h2>
+<div class="cards">
+  <div class="card"><div class="ic">📘</div><h3>Guía + mapa</h3><p>La pauta entendida, con umbrales exactos.</p></div>
+  <div class="card"><div class="ic">📊</div><h3>Dataset en 3 formatos</h3><p>Excel, CSV y JSON, mismo esquema.</p></div>
+  <div class="card"><div class="ic">🎛️</div><h3>Herramienta de seguimiento</h3><p>Tablero vivo con inventario de servicios.</p></div>
+  <div class="card"><div class="ic">📚</div><h3>Documentación</h3><p>Manual, presentación, bitácora y este recorrido.</p></div>
+</div>
+
+<h2>Cómo replicar este enfoque</h2>
+<p>El método sirve para cualquier pauta o estándar, no solo para acreditación:</p>
+<ol class="steps">
+  <li class="step"><h3>Entiende la lógica de puntuación antes que el contenido</h3><p>Qué cuenta, cómo se suma, qué no admite error. Eso define las prioridades.</p></li>
+  <li class="step"><h3>Fija los criterios ambiguos por escrito</h3><p>Antes de medir, no durante. Evita decisiones distintas en cada evaluación.</p></li>
+  <li class="step"><h3>Convierte el requisito en datos con un esquema único</h3><p>Un solo esquema compartido por todos los formatos es lo que hace portable el trabajo.</p></li>
+  <li class="step"><h3>Construye la vista que falta</h3><p>La herramienta no inventa información: hace visible el avance que antes estaba disperso.</p></li>
+  <li class="step"><h3>Documenta para que sobreviva a las personas</h3><p>Lo que no está escrito, se pierde en la primera rotación de equipo.</p></li>
+</ol>
+
+<div class="cta"><h3>El siguiente paso es tuyo</h3><p>Define el inventario real de Tongoy en la herramienta y registra la primera evidencia.</p><a href="https://claude.ai/artifact/C7rphhrrADn6ksq1US2GuE">Abrir la herramienta →</a></div>
+
+</div>
+
+<footer>Documento preparado para el equipo de acreditación de CESFAM Tongoy · Noviembre 2026 · Herramienta de seguimiento de acreditación de atención abierta.</footer>
+</body>
+</html>
